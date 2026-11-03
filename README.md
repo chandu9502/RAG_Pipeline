@@ -1,6 +1,6 @@
-# Modular Retrieval-Augmented Generation (RAG) Pipeline
+#Retrieval Augmented Generation (RAG) Pipeline
 
-A modular, production-ready Retrieval-Augmented Generation (RAG) system built with **FAISS**, **Sentence-Transformers**, and **Groq LLM** (via LangChain). 
+A modular Retrieval-Augmented Generation (RAG) system built with **FAISS**, **Sentence-Transformers**, and **Groq LLM** (via LangChain). 
 
 This pipeline ingests documents across multiple formats, creates normalized dense embeddings, stores them in a local FAISS index, and provides context grounded answers with cosine similarity thresholding
 
@@ -24,7 +24,7 @@ This pipeline ingests documents across multiple formats, creates normalized dens
 4. Retrieval & LLM (search.py)        ──> Top-K filtered chunks + Groq Chat LLM (e.g. gpt-oss-20b)
           │
           ▼
-5. Entrypoints (app.py, src/)         ──> Interactive CLI, one-shot queries, and Python SDK
+5. Entrypoints (app.py, src/)         ──> Interactive CLI
 ```
 
 ---
@@ -33,7 +33,7 @@ This pipeline ingests documents across multiple formats, creates normalized dens
 
 ```
 RAG/
-├── app.py                  # Main CLI application (interactive & direct query modes)
+├── app.py                  # Main CLI application 
 ├── requirements.txt        # Python package dependencies
 ├── pyproject.toml          # Project configuration & metadata
 ├── .env.example            # Environment variables template
