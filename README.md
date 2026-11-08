@@ -1,4 +1,4 @@
-# Modular Retrieval-Augmented Generation (RAG) Pipeline
+# Retrieval Augmented Generation (RAG) Pipeline
 
 A production ready Retrieval Augmented Generation (RAG) system built with **FAISS**, **Sentence-Transformers**, and **Groq LLM** (via LangChain). 
 
@@ -33,6 +33,7 @@ This pipeline ingests documents across multiple formats, creates normalized dens
 
 ```
 RAG/
+├── app.py                  # Main CLI application 
 ├── app.py                  # Main CLI application 
 ├── requirements.txt        # Python package dependencies
 ├── pyproject.toml          # Project configuration & metadata
@@ -70,7 +71,7 @@ RAG/
    cd path/to/RAG
    ```
 
-2. **Create and activate a virtual environment (optional but recommended):**
+2. **Create and activate a virtual environment:**
    ```powershell
    python -m venv .venv
    .venv\Scripts\Activate.ps1
@@ -92,7 +93,7 @@ RAG/
 ## Running the Application
 
 ### 1. Interactive CLI Mode
-Run the assistant in an interactive question-and-answer loop:
+Run the assistant in an interactive question and answer loop:
 ```powershell
 python app.py
 ```
