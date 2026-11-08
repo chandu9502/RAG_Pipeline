@@ -23,6 +23,16 @@ def main():
             print("Index successfully built.")
             return
 
+        if query_text in ["--eval", "--evaluate"]:
+            print("Running RAG evaluation across 4 metrics (local)...")
+            pipeline.evaluate(mode="local")
+            return
+
+        if query_text in ["--eval-langsmith", "--evaluate-langsmith"]:
+            print("Running RAG evaluation on LangSmith...")
+            pipeline.evaluate(mode="langsmith")
+            return
+
         print(f"Query: {query_text}")
         answer = pipeline.query(query_text, top_k=3, score_threshold=0.45)
         print("\nAnswer:")

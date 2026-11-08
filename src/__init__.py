@@ -11,11 +11,27 @@ try:
     from .embedding import EmbeddingPipeline
     from .vectorstore import FaissVectorStore
     from .search import RAGSearch
+    from .evaluation import (
+        correctness,
+        relevance,
+        groundedness,
+        retrieval_relevance,
+        run_evaluation_langsmith,
+        run_evaluation_local,
+    )
 except ImportError:
     from data_loader import load_all_documents
     from embedding import EmbeddingPipeline
     from vectorstore import FaissVectorStore
     from search import RAGSearch
+    from evaluation import (
+        correctness,
+        relevance,
+        groundedness,
+        retrieval_relevance,
+        run_evaluation_langsmith,
+        run_evaluation_local,
+    )
 
 
 class RAGPipeline:
@@ -52,6 +68,15 @@ class RAGPipeline:
         search = self.get_search_engine()
         return search.search_and_summarize(question, top_k=top_k, score_threshold=score_threshold)
 
+    def search_and_retrieve(self, question: str, top_k: int = 5, score_threshold: float = 0.45) -> dict:
+        search = self.get_search_engine()
+        return search.search_and_retrieve(question, top_k=top_k, score_threshold=score_threshold)
+
+    def evaluate(self, mode: str = "local"):
+        if mode == "langsmith":
+            return run_evaluation_langsmith()
+        return run_evaluation_local()
+
 
 __all__ = [
     "load_all_documents",
@@ -59,4 +84,10 @@ __all__ = [
     "FaissVectorStore",
     "RAGSearch",
     "RAGPipeline",
+    "correctness",
+    "relevance",
+    "groundedness",
+    "retrieval_relevance",
+    "run_evaluation_langsmith",
+    "run_evaluation_local",
 ]

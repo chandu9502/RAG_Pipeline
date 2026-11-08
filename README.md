@@ -1,6 +1,6 @@
 # Modular Retrieval-Augmented Generation (RAG) Pipeline
 
-A modular, production-ready Retrieval-Augmented Generation (RAG) system built with **FAISS**, **Sentence-Transformers**, and **Groq LLM** (via LangChain). 
+A production ready Retrieval Augmented Generation (RAG) system built with **FAISS**, **Sentence-Transformers**, and **Groq LLM** (via LangChain). 
 
 This pipeline ingests documents across multiple formats, creates normalized dense embeddings, stores them in a local FAISS index, and provides context grounded answers with cosine similarity thresholding
 
@@ -18,13 +18,13 @@ This pipeline ingests documents across multiple formats, creates normalized dens
 2. Chunking & Embedding (embedding.py) ──> RecursiveCharacterTextSplitter + all-MiniLM-L6-v2
           │
           ▼
-3. Vector Indexing (vectorstore.py)   ──> FAISS (L2 + Cosine Similarity Scoring & Thresholding)
+3. Vector Indexing (vectorstore.py)   ──> FAISS 
           │
           ▼
-4. Retrieval & LLM (search.py)        ──> Top-K filtered chunks + Groq Chat LLM (e.g. gpt-oss-20b)
+4. Retrieval & LLM (search.py)        ──> Top-K
           │
           ▼
-5. Entrypoints (app.py, src/)         ──> Interactive CLI, one-shot queries, and Python SDK
+5. Entrypoints (app.py, src/)         ──> Interactive CLI, one-shot queries
 ```
 
 ---
@@ -33,7 +33,7 @@ This pipeline ingests documents across multiple formats, creates normalized dens
 
 ```
 RAG/
-├── app.py                  # Main CLI application (interactive & direct query modes)
+├── app.py                  # Main CLI application 
 ├── requirements.txt        # Python package dependencies
 ├── pyproject.toml          # Project configuration & metadata
 ├── .env.example            # Environment variables template
@@ -113,6 +113,33 @@ Pass your query directly as an argument:
 python app.py "What is quantum entanglement?"
 ```
 
+---
+
+## RAG Pipeline Evaluation (LangSmith & LLM as a Judge)
+
+The evaluation suite follows the exact structure and metrics from the reference evaluation framework (`1-rag_evaluation.ipynb`), measuring 4 complementary dimensions using structured LLM judges:
+
+### 1. The 4 Evaluation Metrics
+1. **Answer Correctness**: Assesses factual accuracy against ground truth answers using a strict quiz grader rubric.
+2. **Answer Relevance**: Checks whether the response is concise, relevant, and directly addresses the user's question.
+3. **Groundedness / Faithfulness**: Verifies that the answer is strictly substantiated by retrieved facts with zero hallucinations.
+4. **Retrieval Relevance**: Ensures the FAISS vector store retrieved chunks containing keywords or semantic meaning relevant to the query.
+
+### 2. Running Evaluation via CLI
+Run the evaluation suite directly:
+```powershell
+# Run local batch evaluation across all 4 metrics:
+python app.py --eval
+
+# Run online evaluation on LangSmith cloud:
+python app.py --eval-langsmith
+```
+
+Or run the evaluation module directly:
+```powershell
+python src/evaluation.py local
+python src/evaluation.py langsmith
+```
 
 
 

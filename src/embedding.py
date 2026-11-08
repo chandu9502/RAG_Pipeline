@@ -1,4 +1,6 @@
 import os
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 from typing import List
 import numpy as np
 from langchain_core.documents import Document
@@ -16,6 +18,7 @@ class EmbeddingPipeline:
     ):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
         print(f"Loading local embedding model: {model_name}")
         self.model = SentenceTransformer(model_name)
         print(f"Model loaded successfully.")

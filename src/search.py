@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from vectorstore import FaissVectorStore
 from langchain_groq import ChatGroq
+from langchain_core.documents import Document
 
 load_dotenv()
 
@@ -30,22 +31,37 @@ class RAGSearch:
         self.llm = ChatGroq(groq_api_key=groq_api_key, model_name=llm_model, temperature=0.1)
         print(f"Groq LLM initialized: {llm_model}")
 
-    def search_and_summarize(self, query: str, top_k: int = 5, score_threshold: float = 0.45) -> str:
+    def search_and_retrieve(self, query: str, top_k: int = 5, score_threshold: float = 0.45) -> dict:
         results = self.vectorstore.query(query, top_k=top_k, score_threshold=score_threshold)
-        texts = [r["metadata"].get("text", "") for r in results if r and r.get("metadata")]
+        docs = []
+        for r in results:
+            if r and r.get("metadata"):
+                text = r["metadata"].get("text", "")
+                meta = {k: v for k, v in r.get("metadata", {}).items() if k != "text"}
+                meta["score"] = r.get("score")
+                docs.append(Document(page_content=text, metadata=meta))
+
+        texts = [d.page_content for d in docs]
         context = "\n\n".join(texts).strip()
         if not context:
-            return "No relevant documents found."
-        prompt = (
-            f"You are a helpful assistant. Answer the query using ONLY the provided context.\n"
-            f"If the context does not contain enough relevant information to answer the question, state: "
-            f"'I could not find relevant information in the documents to answer this question.'\n\n"
-            f"Context:\n{context}\n\n"
-            f"Query: {query}\n\n"
-            f"Answer:"
-        )
-        response = self.llm.invoke([prompt])
-        return response.content
+            answer = "No relevant documents found."
+        else:
+            prompt = (
+                f"You are a helpful assistant. Answer the query using ONLY the provided context.\n"
+                f"If the context does not contain enough relevant information to answer the question, state: "
+                f"'I could not find relevant information in the documents to answer this question.'\n\n"
+                f"Context:\n{context}\n\n"
+                f"Query: {query}\n\n"
+                f"Answer:"
+            )
+            response = self.llm.invoke([prompt])
+            answer = response.content
+
+        return {"answer": answer, "documents": docs}
+
+    def search_and_summarize(self, query: str, top_k: int = 5, score_threshold: float = 0.45) -> str:
+        result = self.search_and_retrieve(query, top_k=top_k, score_threshold=score_threshold)
+        return result["answer"]
 
 if __name__ == "__main__":
     rag_search = RAGSearch()
